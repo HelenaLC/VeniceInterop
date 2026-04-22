@@ -131,7 +131,7 @@ colData(tables(x)[[1]]) <- cbind(colData(tables(x)[[1]]), colData(sce_obj)[c("rc
 
 In order to plot this we use the `SpatialData.plot` library implemented to interface with the `SpatialData` object
 
-```{r plotPoint, eval=TRUE, fig.width=8, fig.height=2.5}
+```{r plotPoint, eval=TRUE}
 y <- x$points$transcripts
 #filter interesting genes
 y <- y |> dplyr::filter(feature_name  %in% c("EPCAM", "LUM"))
@@ -171,13 +171,29 @@ table(x, "d") <- t
 #filter interesting genes
 y <- point(x, "c") |> dplyr::filter(feature_name  %in% c("EPCAM", "LUM"))
 # demo. viz. capabilities
-plotSpatialData() + 
+p <- plotSpatialData() + 
+    plotShape(x, i = "a", fill = "transferred_celltype_plot", alpha = 1, linewidth = 0) 
+
+q <- plotSpatialData() + 
+    plotShape(x, i = "a", fill = "F1_purity", alpha = 1, linewidth = 0) + 
+    scale_fill_viridis_c() +
+    new_scale("fill") + 
+    plotShape(x, i = "b", colour = "white", alpha = 0, linewidth = 0) + 
+    new_scale("colour") + 
+    plotPoint(y, colour = "feature_name", size = 0.3)
+
+r <- plotSpatialData() + 
     plotShape(x, i = "a", fill = "rctd_entropy", alpha = 1, linewidth = 0) + 
     scale_fill_viridis_c() +
     new_scale("fill") + 
     plotShape(x, i = "b", colour = "white", alpha = 0, linewidth = 0) + 
     new_scale("colour") + 
     plotPoint(y, colour = "feature_name", size = 0.3)
+```
+
+```{r}
+library(patchwork)
+p/q/r
 ```
 
 # Session info
